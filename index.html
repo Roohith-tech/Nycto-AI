@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nycto AI Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #13131a;
+            color: #ececf1;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* 1. Left Nav Sidebar Section */
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            background-color: #0c0c10;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #1e1e26;
+            height: 100vh;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 4px;
+        }
+
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            border-radius: 4px;
+            filter: drop-shadow(0px 0px 5px rgba(255, 51, 51, 0.4));
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .new-chat-btn {
+            background-color: #1a1a24;
+            color: #ffffff;
+            border: 1px solid #282836;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .new-chat-btn:hover {
+            background-color: #242433;
+            border-color: #ff3333;
+        }
+
+        /* 2. Chat Workspace Window Section */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #13131a;
+            height: 100vh;
+        }
+
+        .chat-scroller {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 18%;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .bot-row {
+            display: flex;
+            align-self: flex-start;
+            max-width: 85%;
+        }
+
+        .bot-bubble {
+            background-color: #1c1c24;
+            color: #e3e3e6;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            border: 1px solid #252533;
+        }
+
+        .error-bubble {
+            border: 1px solid #990000;
+            background-color: #211212;
+            color: #ff9999;
+        }
+
+        .user-row {
+            display: flex;
+            align-self: flex-end;
+            max-width: 75%;
+        }
+
+        .user-bubble {
+            background-color: #2b59c3;
+            color: #ffffff;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* 3. Bottom Input Dock Footer Section */
+        .dock-footer {
+            padding: 20px 18% 35px 18%;
+            background: linear-gradient(180deg, rgba(19,19,26,0) 0%, #13131a 40%);
+        }
+
+        .dock-input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #1c1c24;
+            border: 1px solid #2a2a38;
+            border-radius: 14px;
+            padding: 12px 18px;
+        }
+
+        .dock-input-wrapper:focus-within {
+            border-color: #ff3333;
+        }
+
+       textarea {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    outline: blue;
+    resize: none;
+    line-height: 25px; /* Lowers line spacing to stop cutoff */
+    padding-top: 10px;  /* Pushes the text perfectly into the middle */
+    height: 24px;
+
+    }
+
+
+        .submit-btn {
+            background-color: #ffffff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: #ff3333;
+            transform: scale(1.05);
+        }
+
+        .submit-btn svg {
+            fill: #000000;
+            width: 14px;
+            height: 14px;
+        }
+
+        .submit-btn:hover svg {
+            fill: #ffffff;
+        }
+                /* Adds a mobile view modifier sequence */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #1e1e26;
+                padding: 12px 16px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .brand-wrapper {
+                margin-bottom: 0;
+            }
+            .new-chat-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            .chat-scroller {
+                padding: 20px 20px; /* Expands messaging space on smaller devices */
+            }
+            .dock-footer {
+                padding: 10px 15px 25px 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand-wrapper">
+            <img src="logo.png" class="brand-logo" alt="Logo">
+            <div class="brand-title">Nycto AI</div>
+        </div>
+        <button class="new-chat-btn" onclick="wipeMemorySession()">+ New Chat</button>
+    </div>
+
+    <div class="workspace">
+        <div class="chat-scroller" id="chatBox">
+            <div class="bot-row">
+                <div class="bot-bubble">Hmph. I am Nycto AI. Speak. What do you want? Don't waste my time.</div>
+            </div>
+        </div>
+
+        <div class="dock-footer">
+            <div class="dock-input-wrapper">
+                <textarea id="userInput" placeholder="Message Nycto AI..." rows="1"></textarea>
+                <button class="submit-btn" id="sendBtn" onclick="transmitPayload()">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let sessionTrackingId = "session_" + Math.random().toString(36).substr(2, 9);
+    const userInput = document.getElementById("userInput");
+
+    userInput.addEventListener("input", function() {
+        this.style.height = "24px";
+        this.style.height = (this.scrollHeight - 12) + "px";
+    });
+
+    userInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            transmitPayload();
+        }
+    });
+
+    function wipeMemorySession() {
+        sessionTrackingId = "session_" + Math.random().toString(36).substr(2, 9);
+        const chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML = `
+            <div class="bot-row">
+                <div class="bot-bubble">Hmph. History erased. Speak your new query sequence.</div>
+            </div>
+        `;
+    }
+
+    async function transmitPayload() {
+        const promptText = userInput.value.trim();
+        if (!promptText) return;
+
+        appendChatBlock(promptText, 'user');
+        userInput.value = "";
+        userInput.style.height = "24px";
+
+        try {
+            // Automatically shifts target IP address pathways based on connection device type
+            const backendHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '127.0.0.1' : window.location.hostname;
+            const nodeQuery = await fetch(`http://${backendHost}:5000/chat`, {
+
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: sessionTrackingId,
+                    message: promptText
+                })
+            });
+
+            const data = await nodeQuery.json();
+            
+            if (data.reply) {
+                appendChatBlock(data.reply, 'bot');
+            } else {
+                appendChatBlock("Error communicating with Nycto AI core framework.", 'error');
+            }
+        } catch (err) {
+            appendChatBlock(`Error connecting to Nycto AI. Is your python backend server running in the terminal?`, 'error');
+        }
+    }
+
+    function appendChatBlock(text, identity) {
+        const chatBox = document.getElementById("chatBox");
+        
+        if (identity === 'user') {
+            const userRow = document.createElement("div");
+            userRow.className = "user-row";
+            userRow.innerHTML = `<div class="user-bubble"></div>`;
+            userRow.querySelector('.user-bubble').innerText = text;
+            chatBox.appendChild(userRow);
+        } else {
+            const botRow = document.createElement("div");
+            botRow.className = "bot-row";
+            
+            if (identity === 'error') {
+                botRow.innerHTML = `<div class="bot-bubble error-bubble"></div>`;
+                botRow.querySelector('.error-bubble').innerText = text;
+            } else {
+                botRow.innerHTML = `<div class="bot-bubble"></div>`;
+                botRow.querySelector('.bot-bubble').innerText = text;
+            }
+            chatBox.appendChild(botRow);
+        }
+        
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
