@@ -289,7 +289,9 @@
         try {
             // Automatically shifts target IP address pathways based on connection device type
             const backendHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '127.0.0.1' : window.location.hostname;
-            const nodeQuery = await fetch(`http://${backendHost}:5000/chat`, {
+            // This tells your webpage to send messages to your live cloud server!
+            const nodeQuery = await fetch("https://nycto-backend.onrender.com/", {  
+
 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
